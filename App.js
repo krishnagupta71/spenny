@@ -1,12 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import HomePage from './src/scenes/homePage'
+import { Provider } from 'react-redux'
+import  Store from './src/store'
+
 export default function App() {
   return (
-    /*
-    In Real App we would insert router here.
-    */
-    <HomePage/>
+
+    <Provider store={store}>
+      <HomePage />
+    </Provider>
   );
 }
 

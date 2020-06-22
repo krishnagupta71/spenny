@@ -8,8 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 class SpennyPicker extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
     }
 
     render() {

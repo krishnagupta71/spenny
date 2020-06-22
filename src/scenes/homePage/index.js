@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Image, FlatList } from 'react-native';
+import { View, ScrollView, Image, FlatList, TouchableOpacity } from 'react-native';
 import styles from './styles'
 let constants = require('./constants');
 import { moderateScale } from "../../utilities/fontScaling"
@@ -9,50 +9,49 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import SpennyPicker from '../../components/spennyPicker'
 import SpennyGraph from '../../components/spennyGraph'
 import { convertUnixTimeToDateString, getIconBySpendingType } from '../../utilities/Utils'
+import { connect } from 'react-redux'
+import { changeMonth, fetchData } from '../../actions'
+
+const mapStateToProps = state => ({
+  selectedMonth: state.selectedMonth,
+  apiData: state.apiData
+})
+const mapDispatchToProps = dispatch => {
+  return{
+      changeMonth: (index) => { dispatch(changeMonth(index)) },
+      fetchData: () => {dispatch(fetchData())}
+  }
+}
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
-      spending: [
-        {
-          "Shopping": "279",
-          "date": "1592227512050"
-        },
-        {
-          "Bills": "122",
-          "date": "1592227512050"
-        },
-        {
-          "Rent": "1600",
-          "date": "1592227512050"
-        }
-      ]
-    };
   }
-
-
+  componentDidMount(){
+    //SAGA dispatch
+    // this.props.fetchData();
+  }
   /**
    * All Render Methods are here
    */
   renderHeader() {
     return (
       <View style={styles.headerContainer}>
-        <Text style={styles.h2Text}>Expenses</Text>
+        <Text style={styles.h2Text}>{constants.HEADER_HEADING}</Text>
         <Image style={styles.logoutImage} source={require('../../../assets/icon_logout.png')} />
       </View>
     )
   }
 
   renderCardBalance() {
+    let cardBalanceString = "$" + this.props.apiData.cardBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     return (
       <View style={styles.cardBalanceContainer}>
 
         <View style={[styles.cardBalanceInnerContainer], { alignItems: 'flex-start' }}>
 
-          <Text style={[styles.smallTextHeavy, { marginBottom: moderateScale(5) }]}>Card Balance</Text>
-          <Text style={styles.h1Text}>$6,390</Text>
+    <Text style={[styles.smallTextHeavy, { marginBottom: moderateScale(5) }]}>{constants.CARD_BALANCE}</Text>
+          <Text style={styles.h1Text}>{cardBalanceString}</Text>
 
         </View>
 
@@ -94,7 +93,7 @@ class HomePage extends Component {
           <FlatList
             showsHorizontalScrollIndicator={false}
             horizontal={true}
-            data={this.state.months}
+            data={this.props.apiData.month}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => this.renderTimePeriodItem(item, index)}
           />
@@ -106,9 +105,9 @@ class HomePage extends Component {
 
   renderTimePeriodItem(item, index) {
     return (
-      <View id={index} style={[styles.flatListItem, { backgroundColor: index == 0 ? '#dfe7f5' : null }]}>
-        <Text style={[styles.smallTextMedium, { color: index == 0 ? appConfig.BLUE_TEXT_COLOR : appConfig.LIGHT_GRAY_TEXT_COLOR }]}>{item}</Text>
-      </View>
+      <TouchableOpacity id={index} style={[styles.flatListItem, { backgroundColor: index == this.props.selectedMonth ? '#dfe7f5' : null }]} onPress={() => { this.props.changeMonth(index) }}>
+        <Text style={[styles.smallTextMedium, { color: index == this.props.selectedMonth ? appConfig.BLUE_TEXT_COLOR : appConfig.LIGHT_GRAY_TEXT_COLOR }]}>{item}</Text>
+      </TouchableOpacity>
     )
   }
 
@@ -123,8 +122,8 @@ class HomePage extends Component {
   renderSpendingBreakdown() {
     return (
       <View style={styles.spendingBreakdownContainer}>
-        <Text style={[styles.h2Text, { alignSelf: "flex-start" }]}>Spending Breakdown</Text>
-        {this.state.spending.map(this.renderSpendingBreakdownItem)}
+        <Text style={[styles.h2Text, { alignSelf: "flex-start" }]}>{constants.SPENDING_TEXT}</Text>
+        {this.props.apiData.spending.map(this.renderSpendingBreakdownItem)}
       </View>
     )
   }
@@ -157,26 +156,26 @@ class HomePage extends Component {
 
         <View style={styles.tabBarItemsContainer}>
           <Image style={styles.tabBarItemImage} source={require('../../../assets/home.png')} />
-          <Text style={styles.tabIconText}>Home</Text>
+          <Text style={styles.tabIconText}>{constants.HOME_TAB}</Text>
         </View>
 
         <View style={styles.tabBarItemsContainer}>
           <Image style={styles.tabBarItemImage} source={require('../../../assets/expenses_chart.png')} />
-          <Text style={[styles.tabIconText, { color: appConfig.BLUE_TEXT_COLOR }]}>Expenses</Text>
+    <Text style={[styles.tabIconText, { color: appConfig.BLUE_TEXT_COLOR }]}>{constants.EXPENSES_TAB}</Text>
         </View>
 
         <View style={styles.tabBarAddButtonContainer}>
-          <Image style={{ height: moderateScale(60), width: moderateScale(60), borderColor: appConfig.BG_WHITE_COLOR, borderWidth: moderateScale(4), borderRadius: moderateScale(30) }} source={require('../../../assets/plus.png')} />
+          <Image style={styles.tabBarCenterPlusIcon} source={require('../../../assets/plus.png')} />
         </View>
 
         <View style={styles.tabBarItemsContainer}>
           <Image style={styles.tabBarItemImage} source={require('../../../assets/piggy_bank.png')} />
-          <Text style={styles.tabIconText}>Wallet</Text>
+          <Text style={styles.tabIconText}>{constants.WALLET_TAB}</Text>
         </View>
 
         <View style={styles.tabBarItemsContainer}>
           <Image style={styles.tabBarItemImage} source={require('../../../assets/profile.png')} />
-          <Text style={styles.tabIconText}>Profile</Text>
+          <Text style={styles.tabIconText}>{constants.PROFILE_TAB}</Text>
         </View>
       </View>
     )
@@ -185,11 +184,11 @@ class HomePage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.scrollViewContainer}
-          contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}>
-          {this.renderHeader()}
+        <ScrollView stickyHeaderIndices={[0]} showsVerticalScrollIndicator={false} style={styles.scrollViewContainer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}>
+          <View style={{ backgroundColor: appConfig.BG_WHITE_COLOR }}>
+            {/* Placed the head in a seprate view to maintain its styling when fixing the header during scroll */}
+            {this.renderHeader()}
+          </View>
           {this.renderCardBalance()}
           {this.renderTimePeriod()}
           {this.renderGraph()}
@@ -201,4 +200,4 @@ class HomePage extends Component {
   }
 }
 
-export default HomePage;
+export default connect(mapStateToProps,mapDispatchToProps)(HomePage);

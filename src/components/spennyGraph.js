@@ -16,7 +16,7 @@ class SpennyGraph extends Component {
             <LineChart
                 data={data}
                 width={screenWidth}
-                height={moderateScale(250)}
+                height={moderateScale(300)}
                 verticalLabelRotation={0}
                 chartConfig={chartConfig}
                 segments={3}

@@ -16,7 +16,7 @@ export default {
     },
     scrollViewContainer: {
         flex: 1,
-        width: "100%",
+        width: screenWidth,
         marginBottom: moderateScale(65),
         marginTop: moderateScale(30)
     },
@@ -146,6 +146,13 @@ export default {
         marginBottom: moderateScale(5),
         alignSelf: 'center'
     },
+    tabBarCenterPlusIcon: {
+        height: moderateScale(60),
+        width: moderateScale(60),
+        borderColor: appConfig.BG_WHITE_COLOR,
+        borderWidth: moderateScale(4),
+        borderRadius: moderateScale(30)
+    },
     tabBarAddButtonContainer: {
         zIndex: 100,
         alignContent: 'flex-start',
@@ -158,7 +165,8 @@ export default {
         backgroundColor: '#f8f9f9',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        margin: moderateScale(20)
+        margin: moderateScale(20),
+        marginTop: 0
     },
     spendingBreakdownItemContainer: {
         width: "100%",
