@@ -21,10 +21,11 @@ class SpennyGraph extends Component {
                 chartConfig={chartConfig}
                 segments={3}
                 withDots={false}
-                // withInnerLines={false}
+                withInnerLines={false}
                 withOuterLines={false}
-                withHorizontalLabels={false}
+                withHorizontalLabels={true}
                 fromZero={true}
+                yAxisInterval={3}
                 bezier
             />
         );
