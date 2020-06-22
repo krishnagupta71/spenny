@@ -17,9 +17,9 @@ const mapStateToProps = state => ({
   apiData: state.apiData
 })
 const mapDispatchToProps = dispatch => {
-  return{
-      changeMonth: (index) => { dispatch(changeMonth(index)) },
-      fetchData: () => {dispatch(fetchData())}
+  return {
+    changeMonth: (index) => { dispatch(changeMonth(index)) },
+    fetchData: () => { dispatch(fetchData()) }
   }
 }
 
@@ -27,7 +27,7 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount(){
+  componentDidMount() {
     //SAGA dispatch
     // this.props.fetchData();
   }
@@ -50,7 +50,7 @@ class HomePage extends Component {
 
         <View style={[styles.cardBalanceInnerContainer], { alignItems: 'flex-start' }}>
 
-    <Text style={[styles.smallTextHeavy, { marginBottom: moderateScale(5) }]}>{constants.CARD_BALANCE}</Text>
+          <Text style={[styles.smallTextHeavy, { marginBottom: moderateScale(5) }]}>{constants.CARD_BALANCE}</Text>
           <Text style={styles.h1Text}>{cardBalanceString}</Text>
 
         </View>
@@ -161,7 +161,7 @@ class HomePage extends Component {
 
         <View style={styles.tabBarItemsContainer}>
           <Image style={styles.tabBarItemImage} source={require('../../../assets/expenses_chart.png')} />
-    <Text style={[styles.tabIconText, { color: appConfig.BLUE_TEXT_COLOR }]}>{constants.EXPENSES_TAB}</Text>
+          <Text style={[styles.tabIconText, { color: appConfig.BLUE_TEXT_COLOR }]}>{constants.EXPENSES_TAB}</Text>
         </View>
 
         <View style={styles.tabBarAddButtonContainer}>
@@ -184,11 +184,8 @@ class HomePage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView stickyHeaderIndices={[0]} showsVerticalScrollIndicator={false} style={styles.scrollViewContainer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}>
-          <View style={{ backgroundColor: appConfig.BG_WHITE_COLOR }}>
-            {/* Placed the head in a seprate view to maintain its styling when fixing the header during scroll */}
-            {this.renderHeader()}
-          </View>
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollViewContainer} contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}>
+          {this.renderHeader()}
           {this.renderCardBalance()}
           {this.renderTimePeriod()}
           {this.renderGraph()}
@@ -200,4 +197,4 @@ class HomePage extends Component {
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
